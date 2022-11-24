@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.PostFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <VideoView
+                android:id="@+id/postVideoView"
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true"/>
+
+            <Button
+                android:id="@+id/uploadVideoButton"
+                android:layout_width="147dp"
+                android:layout_height="47dp"
+                android:layout_below="@+id/postVideoView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/upload_button_text" />
+
+            <EditText
+                android:id="@+id/titlePostInput"
+                android:layout_width="295dp"
+                android:layout_height="43dp"
+                android:layout_below="@+id/uploadVideoButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/edit_text_border"
+                android:ems="10"
+                android:hint="@string/title_input_hint"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/captionPostInput"
+                android:layout_width="295dp"
+                android:layout_height="90dp"
+                android:layout_below="@+id/titlePostInput"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/edit_text_border"
+                android:ems="10"
+                android:hint="@string/caption_input_hint"
+                android:inputType="textMultiLine"
+                android:padding="10dp" />
+
+            <Spinner
+                android:id="@+id/complexitySpinner"
+                android:layout_width="230dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/captionPostInput"
+                android:layout_marginLeft="115dp"
+                android:layout_marginTop="19dp"
+                android:background="@drawable/edit_text_border" />
+
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_width="230dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/complexityTextview"
+                android:layout_marginLeft="115dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edit_text_border" />
+
+            <TextView
+                android:id="@+id/complexityTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/captionPostInput"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/complexity_input_textView" />
+
+            <TextView
+                android:id="@+id/categoryTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/complexitySpinner"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/category_input_textView" />
+
+            <Button
+                android:id="@+id/buttonPost"
+                android:layout_width="147dp"
+                android:layout_height="47dp"
+                android:layout_below="@+id/categorySpinner"
+                android:layout_marginLeft="190dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/post_menu" />
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>

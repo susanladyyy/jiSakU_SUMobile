@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "262671469502",
+    "project_id": "jisaku-su",
+    "storage_bucket": "jisaku-su.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262671469502:android:c8924eaf2bda1734f307ef",
+        "android_client_info": {
+          "package_name": "edu.bluejack22_1.jisaku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262671469502-hatr7s5jg79ajfsi2r29c75sfeg5fa3j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.bluejack22_1.jisaku",
+            "certificate_hash": "de3e0c6a4ce135386e2c6c96ae3aba9b94e2249c"
+          }
+        },
+        {
+          "client_id": "262671469502-tnvm257gn7n2aj1ftkffp7vrdmotqf0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW0LWr5oMVggFcsAy_kDToMakbjaDGaZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262671469502-tnvm257gn7n2aj1ftkffp7vrdmotqf0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

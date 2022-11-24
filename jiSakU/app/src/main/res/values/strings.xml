@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">jiSakU</string>
+    <!--    Common-->
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+
+    <!--    Main Activity-->
+    <string name="name_register_label">Name</string>
+    <string name="confirm_register_label">Confirm Password</string>
+    <string name="button_register">Register</string>
+    <string name="go_to_login">Already have an account? Login here</string>
+
+    <!--    Login Activity-->
+    <string name="button_login">Login</string>
+    <string name="go_to_register">No account yet? Register here</string>
+
+    <!--    Google Login-->
+    <string name="web_client_id" translatable="false">391384284017-052n6ttqk52hugthdjok66ocat6jd98k.apps.googleusercontent.com</string>
+
+    <!--    Logged Activity-->
+    <string name="home_menu">Home</string>
+    <string name="explore_menu">Explore</string>
+    <string name="post_menu">Post</string>
+    <string name="activity_menu">Activity</string>
+    <string name="profile_menu">Profile</string>
+
+    <!--    Profile Activity-->
+    <string name="follower_textView">Followers</string>
+    <string name="following_textView">Following</string>
+    <string name="diy_list_title">Your DIY Video(s)</string>
+    <string name="no_post_textView">No Post Yet</string>
+
+    <!--    Visibilities-->
+    <string name="setting_button_visibility" translatable="false">visible</string>
+    <string name="clickable_setting_button" translatable="false">true</string>
+
+    <!--    Profile Setting Activity-->
+    <string name="profile_setting_title">Profile Settings</string>
+    <string name="name_input_hint">Name</string>
+    <string name="bio_input_hint">Bio</string>
+    <string name="upload_button_text">Upload</string>
+    <string name="save_changes_button_text">Save</string>
+
+    <!--    Posting Activity-->
+    <string name="title_input_hint">Title</string>
+    <string name="caption_input_hint">Caption</string>
+    <string name="category_input_textView">Category</string>
+    <string name="category_choice_0">Choose Category</string>
+    <string name="category_choice_1" translatable="false">Birthday Gift</string>
+    <string name="category_choice_2" translatable="false">School Crafts</string>
+    <string name="category_choice_3" translatable="false">Home Appliances</string>
+    <string name="category_choice_4" translatable="false">Fabric Crafts</string>
+    <string name="category_choice_5" translatable="false">Others</string>
+    <string name="complexity_input_textView">Complexity</string>
+    <string name="complexity_choice_0">Choose Complexity</string>
+    <string name="complexity_choice_1" translatable="false">Simple</string>
+    <string name="complexity_choice_2" translatable="false">Medium</string>
+    <string name="complexity_choice_3" translatable="false">Intermediate</string>
+    <string name="complexity_choice_4" translatable="false">Complex</string>
+
+    <!--    Explore Activity-->
+    <string name="explore_title_textView">Explore</string>
+    <string name="filter_by_textView">Filter By:</string>
+
+    <!--    Post Detail Activity-->
+    <string name="posted_by_textView">Posted by</string>
+    <string name="on_textView">on</string>
+    <string name="comment_title">Comments</string>
+
+    <!-- Follow Activity -->
+    <string name="no_follows">No Data</string>
+    <string name="back_textView">Double tap to go back</string>
+
+    <!--    Home Activity-->
+    <string name="no_post_home">No post yet, start posting/ following someone to view posts</string>
+    <string name="wishlist_textView">Wishlist</string>
+</resources>

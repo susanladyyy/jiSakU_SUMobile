@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">jiSakU</string>
+    <string name="name_register_label">Nama</string>
+    <string name="confirm_register_label">Konfirmasi Kata Sandi</string>
+    <string name="button_register">Daftar</string>
+    <string name="go_to_login">Sudah memiki akun? Masuk disini</string>
+    <string name="button_login">Masuk</string>
+    <string name="go_to_register">Belum memiki akun? Daftar disini</string>
+    <string name="email_label">Surel</string>
+    <string name="password_label">Kata Sandi</string>
+    <string name="home_menu">Beranda</string>
+    <string name="explore_menu">Jelajahi</string>
+    <string name="activity_menu">Aktivitas</string>
+    <string name="profile_menu">Profil</string>
+    <string name="post_menu">Pasang</string>
+    <string name="follower_textView">Pengikut</string>
+    <string name="following_textView">Mengikuti</string>
+    <string name="profile_setting_title">Pengaturan Profil</string>
+    <string name="name_input_hint">Nama</string>
+    <string name="bio_input_hint">Bio</string>
+    <string name="save_changes_button_text">Simpan</string>
+    <string name="upload_button_text">Kirim</string>
+    <string name="title_input_hint">Judul</string>
+    <string name="caption_input_hint">Deksripsi</string>
+    <string name="category_input_textView">Kategori</string>
+    <string name="complexity_input_textView">Kompleksitas</string>
+    <string name="category_choice_0">Pilih Kategori</string>
+    <string name="complexity_choice_0">Pilih Kompleksitas</string>
+    <string name="explore_title_textView">Jelajahi</string>
+    <string name="filter_by_textView">Disaring</string>
+    <string name="diy_list_title">Video DIY Anda</string>
+    <string name="no_post_textView">Belum ada Postingan</string>
+    <string name="posted_by_textView">Di pasang oleh</string>
+    <string name="on_textView">pada</string>
+    <string name="no_follows">Tidak ada data</string>
+    <string name="back_textView">Tekan dua kali untuk kembali</string>
+    <string name="no_post_home">Belum ada posting, mulai memasang/ ikuti orang lain untuk melihat posting</string>
+    <string name="wishlist_textView">Tandai</string>
+    <string name="comment_title">Komentar</string>
+</resources>

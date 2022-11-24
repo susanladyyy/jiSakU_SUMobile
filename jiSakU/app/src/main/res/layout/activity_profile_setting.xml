@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ProfileSettingActivity">
+
+        <TextView
+            android:id="@+id/profileSettingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="108dp"
+            android:text="@string/profile_setting_title"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/nameUpdateInput"
+            android:layout_width="303dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/edit_text_border"
+            android:ems="10"
+            android:hint="@string/name_input_hint"
+            android:inputType="textPersonName"
+            android:padding="10sp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/uploadProfileButton" />
+
+        <EditText
+            android:id="@+id/bioUpdateInput"
+            android:layout_width="308dp"
+            android:layout_height="142dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/edit_text_border"
+            android:ems="10"
+            android:hint="@string/bio_input_hint"
+            android:inputType="textMultiLine"
+            android:padding="10sp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameUpdateInput" />
+
+        <Button
+            android:id="@+id/uploadProfileButton"
+            android:layout_width="120dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/logo"
+            android:text="@string/upload_button_text"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/circleImageProfileSetting" />
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:layout_width="120dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/logo"
+            android:text="@string/save_changes_button_text"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.821"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bioUpdateInput" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageProfileSetting"
+            android:layout_width="165dp"
+            android:layout_height="165dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_default_user_profile"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileSettingTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

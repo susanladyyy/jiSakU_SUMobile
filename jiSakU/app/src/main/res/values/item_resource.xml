@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="complexity_array">
+        <item>@string/complexity_choice_0</item>
+        <item>@string/complexity_choice_1</item>
+        <item>@string/complexity_choice_2</item>
+        <item>@string/complexity_choice_3</item>
+        <item>@string/complexity_choice_4</item>
+    </string-array>
+
+    <string-array name="category_array">
+        <item>@string/category_choice_0</item>
+        <item>@string/category_choice_1</item>
+        <item>@string/category_choice_2</item>
+        <item>@string/category_choice_3</item>
+        <item>@string/category_choice_4</item>
+        <item>@string/category_choice_5</item>
+    </string-array>
+</resources>
