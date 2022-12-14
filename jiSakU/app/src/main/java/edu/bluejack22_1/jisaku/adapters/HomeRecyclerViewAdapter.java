@@ -2,6 +2,7 @@ package edu.bluejack22_1.jisaku.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +12,19 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +47,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     @Override
     public HomeRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recyler_view_home_post, parent, false);
+        View view = inflater.inflate(R.layout.recycler_view_home_post, parent, false);
         return new HomeRecyclerViewAdapter.MyViewHolder(view);
     }
 
@@ -54,20 +58,70 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         holder.caption.setText(posts.get(position).getCaption());
         holder.commentCount.setText(posts.get(position).getComment().size() + "");
 
-        if(posts.get(position).getWishlist().size() == 0) {
-            holder.heart.setVisibility(View.INVISIBLE);
-            holder.unHeart.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.heart.setVisibility(View.VISIBLE);
-            holder.unHeart.setVisibility(View.INVISIBLE);
-        }
+        holder.db.collection("users").document(posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    ArrayList<String> wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                    String postId = posts.get(position).getDocId();
+
+                    if(wishes != null) {
+                        if(wishes.contains(postId)) {
+                            holder.heart.setVisibility(View.VISIBLE);
+                            holder.unHeart.setVisibility(View.INVISIBLE);
+                        }
+                        else {
+                            holder.heart.setVisibility(View.INVISIBLE);
+                            holder.unHeart.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else {
+                        holder.heart.setVisibility(View.INVISIBLE);
+                        holder.unHeart.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
 
         holder.heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.heart.setVisibility(View.INVISIBLE);
                 holder.unHeart.setVisibility(View.VISIBLE);
+
+                holder.db.collection("wishlists").whereEqualTo("postid", posts.get(position).getDocId()).whereEqualTo("userid", posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc: task.getResult()) {
+                                holder.db.collection("wishlists").document(doc.getId()).delete();
+                            }
+                        }
+                    }
+                });
+
+                holder.db.collection("users").document(posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        holder.wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                        int i = 0;
+
+                        if(holder.wishes != null) {
+                            for (String wish: holder.wishes) {
+                                if(wish.equals(posts.get(position).getDocId())) {
+                                    holder.wishes.remove(i);
+                                    break;
+                                }
+                                i++;
+                            }
+
+                            Map<String, Object> wishMap = new HashMap<>();
+                            wishMap.put("wishlist", holder.wishes);
+                            Log.d("wishes", holder.wishes.toString() + "");
+                            holder.db.collection("users").document(posts.get(position).getCurrdocId()).update(wishMap);
+                        }
+                    }
+                });
             }
         });
 
@@ -83,6 +137,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                 holder.db.collection("wishlists").add(wishesMap);
 
                 holder.db.collection("users").document(posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
                         holder.wishes = (ArrayList<String>) task.getResult().get("wishlist");
@@ -92,6 +147,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                         wishMap.put("wishlist", holder.wishes);
                         Log.d("wishes", holder.wishes.toString() + "");
                         holder.db.collection("users").document(posts.get(position).getCurrdocId()).update(wishMap);
+
+                        Map<String, Object> activity = new HashMap<>();
+                        activity.put("userid", posts.get(position).getUserid());
+                        activity.put("activity", "Your post was added to another user wishlist!");
+                        activity.put("date", LocalDate.now().toString());
+
+                        holder.db.collection("activities").add(activity);
                     }
                 });
             }

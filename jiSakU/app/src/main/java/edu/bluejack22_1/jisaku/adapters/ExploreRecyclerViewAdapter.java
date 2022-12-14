@@ -16,19 +16,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import edu.bluejack22_1.jisaku.R;
-import edu.bluejack22_1.jisaku.interfaces.RecylerViewInterface;
+import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Post;
 
 public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecyclerViewAdapter.MyViewHolder> {
 
-    private final RecylerViewInterface recylerViewInterface;
+    private final RecyclerViewInterface recyclerViewInterface;
     private Context context;
     private ArrayList<Post> posts;
 
-    public ExploreRecyclerViewAdapter(Context context, ArrayList<Post> posts, RecylerViewInterface recylerViewInterface) {
+    public ExploreRecyclerViewAdapter(Context context, ArrayList<Post> posts, RecyclerViewInterface recyclerViewInterface) {
         this.context = context;
         this.posts = posts;
-        this.recylerViewInterface = recylerViewInterface;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
@@ -36,8 +36,8 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecy
     @Override
     public ExploreRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recyler_view_explore, parent, false);
-        return new ExploreRecyclerViewAdapter.MyViewHolder(view, recylerViewInterface);
+        View view = inflater.inflate(R.layout.recycler_view_explore, parent, false);
+        return new ExploreRecyclerViewAdapter.MyViewHolder(view, recyclerViewInterface);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecy
         VideoView exploreVideo;
         TextView exploreVideoTitle;
 
-        public MyViewHolder(@NonNull @NotNull View itemView, RecylerViewInterface recylerViewInterface) {
+        public MyViewHolder(@NonNull @NotNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
 
             exploreVideo = itemView.findViewById(R.id.videoCardExplore);
@@ -65,11 +65,11 @@ public class ExploreRecyclerViewAdapter extends RecyclerView.Adapter<ExploreRecy
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(recylerViewInterface != null) {
+                    if(recyclerViewInterface != null) {
                         int pos = getAdapterPosition();
 
                         if(pos != RecyclerView.NO_POSITION) {
-                            recylerViewInterface.OnPostClick(pos);
+                            recyclerViewInterface.OnPostClick(pos);
                         }
                     }
                 }

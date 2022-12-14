@@ -1,14 +1,31 @@
 package edu.bluejack22_1.jisaku.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
 import edu.bluejack22_1.jisaku.R;
+
+import edu.bluejack22_1.jisaku.adapters.ActivityRecyclerViewAdapter;
+import edu.bluejack22_1.jisaku.models.Activity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +78,37 @@ public class ActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_activity, container, false);
+        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        RecyclerView activityList = view.findViewById(R.id.activityList);
+        Intent intent = getActivity().getIntent();
+
+        String userId = intent.getStringExtra("current_user_doc_id");
+
+        getUserActivity(db, userId, activityList);
+
+        return view;
+    }
+
+    public void getUserActivity(FirebaseFirestore db, String userId, RecyclerView activityList) {
+        db.collection("activities").whereEqualTo("userid", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                ArrayList<Activity> activities = new ArrayList<>();
+                if(task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc: task.getResult()) {
+                        Activity act = null;
+
+                        act = new Activity(doc.get("userid").toString(), doc.get("activity").toString(), doc.get("type").toString(), doc.get("date").toString());
+                        activities.add(act);
+                    }
+
+                    ActivityRecyclerViewAdapter adapter = new ActivityRecyclerViewAdapter(getContext(), activities);
+                    activityList.setAdapter(adapter);
+                    activityList.setLayoutManager(new LinearLayoutManager(getContext()));
+                }
+            }
+        });
     }
 }

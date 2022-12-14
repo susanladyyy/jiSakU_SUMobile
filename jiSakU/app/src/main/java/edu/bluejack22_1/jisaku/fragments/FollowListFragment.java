@@ -25,8 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import edu.bluejack22_1.jisaku.OtherUserProfile;
 import edu.bluejack22_1.jisaku.R;
 import edu.bluejack22_1.jisaku.adapters.FollowRecyclerViewAdapter;
+import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Follow;
 
 /**
@@ -88,6 +90,8 @@ public class FollowListFragment extends Fragment {
         RecyclerView followRv = view.findViewById(R.id.followRecylerView);
         ArrayList<String> ids = (ArrayList) intent.getExtras().getSerializable("follow_list");
 
+        String docId = intent.getStringExtra("current_user_doc_id");
+
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
@@ -96,10 +100,10 @@ public class FollowListFragment extends Fragment {
                     for (QueryDocumentSnapshot doc: task.getResult()) {
                         if(ids.contains(doc.getId())) {
                             if(doc.get("profile") != null) {
-                                follows.add(new Follow(doc.get("name").toString(), doc.get("profile").toString()));
+                                follows.add(new Follow(doc.getId(), doc.get("name").toString(), doc.get("profile").toString()));
                             }
                             else {
-                                follows.add(new Follow(doc.get("name").toString(), "default"));
+                                follows.add(new Follow(doc.getId(), doc.get("name").toString(), "default"));
                             }
                         }
                     }
@@ -113,7 +117,16 @@ public class FollowListFragment extends Fragment {
                         followRv.setVisibility(View.VISIBLE);
                     }
 
-                    FollowRecyclerViewAdapter adapter = new FollowRecyclerViewAdapter(getContext(), follows);
+                    FollowRecyclerViewAdapter adapter = new FollowRecyclerViewAdapter(getContext(), follows, new RecyclerViewInterface() {
+                        @Override
+                        public void OnPostClick(int position) {
+                            Intent intent = new Intent(getActivity(), OtherUserProfile.class);
+                            intent.putExtra("clicked_follower_id", follows.get(position).getId());
+                            intent.putExtra("current_user_doc_id", docId);
+
+                            startActivity(intent);
+                        }
+                    });
                     followRv.setAdapter(adapter);
                     followRv.setLayoutManager(new LinearLayoutManager(getContext()));
                 }

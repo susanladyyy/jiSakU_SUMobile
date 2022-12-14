@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,8 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         String docId = intent.getStringExtra("current_user_doc_id");
 
+        Log.d("", docId + "");
+
         db.collection("users").document(docId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             ArrayList<String> ids = new ArrayList<>();
             @Override
@@ -129,7 +132,7 @@ public class HomeFragment extends Fragment {
                                             ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
 
                                             for(int i = 0; i < temp.size(); i++) {
-                                                comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString(), temp.get(i).get("postid").toString()));
+                                                comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
                                             }
                                         }
 
@@ -175,7 +178,7 @@ public class HomeFragment extends Fragment {
                                             ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
 
                                             for(int i = 0; i < temp.size(); i++) {
-                                                comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString(), temp.get(i).get("postid").toString()));
+                                                comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
                                             }
                                         }
 
@@ -191,8 +194,8 @@ public class HomeFragment extends Fragment {
                                     if(homePost != null) homePost.setVisibility(View.INVISIBLE);
                                 }
                                 else {
-                                    if(noPost != null) noPost.setVisibility(View.VISIBLE);
-                                    if(homePost != null) homePost.setVisibility(View.INVISIBLE);
+                                    if(noPost != null) noPost.setVisibility(View.INVISIBLE);
+                                    if(homePost != null) homePost.setVisibility(View.VISIBLE);
                                     HomeRecyclerViewAdapter adapter = new HomeRecyclerViewAdapter(getContext(), posts);
                                     homePost.setAdapter(adapter);
                                     homePost.setLayoutManager(new LinearLayoutManager(getContext()));

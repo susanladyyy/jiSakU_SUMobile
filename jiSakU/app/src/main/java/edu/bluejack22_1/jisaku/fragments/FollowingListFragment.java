@@ -24,9 +24,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import edu.bluejack22_1.jisaku.OtherUserProfile;
 import edu.bluejack22_1.jisaku.R;
 import edu.bluejack22_1.jisaku.adapters.FollowRecyclerViewAdapter;
 import edu.bluejack22_1.jisaku.adapters.FollowingRecyclerViewAdapter;
+import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Follow;
 
 /**
@@ -87,22 +89,20 @@ public class FollowingListFragment extends Fragment {
         RecyclerView followRv = view.findViewById(R.id.followingRecylerView);
         ArrayList<String> ids = (ArrayList) intent.getExtras().getSerializable("following_list");
 
+        String docId = intent.getStringExtra("current_user_doc_id");
+
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
                 ArrayList<Follow> follows = new ArrayList<>();
                 if(task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc: task.getResult()) {
-                        Log.d("IDs ", ids.get(0) + "");
-                        Log.d("DOC ID", doc.getId() + "");
-                        Log.d("STATUS", ids.contains("kAP4yIEYM0XP7inMgCBQ") + "");
                         if(ids.contains(doc.getId())) {
-                            Log.d("DOC ID", "DOC ID == IDS[ctr]");
                             if(doc.get("profile") != null) {
-                                follows.add(new Follow(doc.get("name").toString(), doc.get("profile").toString()));
+                                follows.add(new Follow(doc.getId(), doc.get("name").toString(), doc.get("profile").toString()));
                             }
                             else {
-                                follows.add(new Follow(doc.get("name").toString(), "default"));
+                                follows.add(new Follow(doc.getId(), doc.get("name").toString(), "default"));
                             }
                         }
                     }
@@ -116,7 +116,16 @@ public class FollowingListFragment extends Fragment {
                         followRv.setVisibility(View.VISIBLE);
                     }
 
-                    FollowingRecyclerViewAdapter adapter = new FollowingRecyclerViewAdapter(getContext(), follows);
+                    FollowingRecyclerViewAdapter adapter = new FollowingRecyclerViewAdapter(getContext(), follows, new RecyclerViewInterface() {
+                        @Override
+                        public void OnPostClick(int position) {
+                            Intent intent = new Intent(getActivity(), OtherUserProfile.class);
+                            intent.putExtra("clicked_following_id", follows.get(position).getId());
+                            intent.putExtra("current_user_doc_id", docId);
+
+                            startActivity(intent);
+                        }
+                    });
                     followRv.setAdapter(adapter);
                     followRv.setLayoutManager(new LinearLayoutManager(getContext()));
                 }

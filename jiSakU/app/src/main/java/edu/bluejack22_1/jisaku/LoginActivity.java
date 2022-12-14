@@ -142,7 +142,6 @@ public class LoginActivity extends AppCompatActivity {
                                                         }
 
                                                         loggedActivity.putExtra("credentials", "email_pass");
-                                                        finish();
                                                         startActivity(loggedActivity);
                                                     }
                                                 }
@@ -173,8 +172,6 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 task.getResult(ApiException.class);
-
-                finish();
                 Intent loggedActivity = new Intent(this, LoggedActivity.class);
 
                 GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
@@ -193,7 +190,27 @@ public class LoginActivity extends AppCompatActivity {
 
                                     loggedActivity.putExtra("current_user_doc_id", docId);
                                     loggedActivity.putExtra("credentials", "google_signin");
-                                    startActivity(loggedActivity);
+                                    loggedActivity.putExtra("current_auth_email", acc.getEmail());
+                                    loggedActivity.putExtra("current_auth_name", acc.getDisplayName());
+
+//                                    if(currUser.get("bio") != null) loggedActivity.putExtra("current_auth_bio", currUser.get("bio").toString());
+//                                    else loggedActivity.putExtra("current_auth_bio", "");
+//
+//                                    if(currUser.get("profile") != null) loggedActivity.putExtra("current_user_profile", currUser.get("profile").toString());
+//                                    else loggedActivity.putExtra("current_user_profile", "");
+//
+//                                    if(currUser.get("followers") != null) loggedActivity.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
+//                                    else {
+//                                        ArrayList<String> fol = new ArrayList<>();
+//                                        loggedActivity.putExtra("current_user_follower", fol);
+//                                    }
+//
+//                                    if(currUser.get("following") != null) loggedActivity.putExtra("current_user_following",  (ArrayList) currUser.get("following"));
+//                                    else {
+//                                        ArrayList<String> foll = new ArrayList<>();
+//                                        loggedActivity.putExtra("current_user_following", foll);
+//                                    }
+//                                    startActivity(loggedActivity);
                                 }
                             });
                         }
@@ -209,6 +226,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                     loggedActivity.putExtra("current_user_doc_id", docId);
                                     loggedActivity.putExtra("credentials", "google_signin");
+
+                                    // kalau ada ambil data lengkapnya dari db
                                     startActivity(loggedActivity);
                                 }
                             });

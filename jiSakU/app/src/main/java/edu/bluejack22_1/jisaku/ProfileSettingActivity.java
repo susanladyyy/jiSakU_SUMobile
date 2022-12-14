@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -77,6 +78,9 @@ public class ProfileSettingActivity extends AppCompatActivity {
         bioInput = findViewById(R.id.bioUpdateInput);
         bioInput.setText(fromProfileSet.getStringExtra("current_auth_bio"));
 
+        ArrayList<String> authFollower = (ArrayList<String>) fromProfileSet.getExtras().getSerializable("current_user_follower");
+        ArrayList<String> authFollowing = (ArrayList<String>) fromProfileSet.getExtras().getSerializable("current_user_following");
+
         profile = findViewById(R.id.circleImageProfileSetting);
         if(fromProfileSet.getStringExtra("current_user_profile") == null || fromProfileSet.getStringExtra("current_user_profile").equals("")) {
             profile.setImageResource(R.drawable.ic_default_user_profile);
@@ -112,52 +116,71 @@ public class ProfileSettingActivity extends AppCompatActivity {
                 else {
                     if (imageUri != null) {
                         // upload to storage
-                        String requestId = MediaManager.get().upload(imageUri).unsigned("jiSakU_SU").option("resource_type", "image").option("folder", "jiSakU").option("public_id", imageUri.toString()).callback(new UploadCallback() {
-                            @Override
-                            public void onStart(String requestId) {
+                        StorageReference ref = storageReference.child("profiles/" + UUID.randomUUID().toString());
 
-                            }
+                        if(!imageUri.toString().contains("https")) {
+                            ref.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<UploadTask.TaskSnapshot> task) {
+                                    if(task.isSuccessful()) {
+                                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String download = uri.toString();
 
-                            @Override
-                            public void onProgress(String requestId, long bytes, long totalBytes) {
+                                                Map<String, Object> authUpdate = new HashMap<>();
+                                                authUpdate.put("name", name);
+                                                if(bio.length() > 0) {
+                                                    authUpdate.put("bio", bio);
+                                                }
+                                                authUpdate.put("profile", download);
 
-                            }
+                                                db.collection("users").document(docId).update(authUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                        Intent backToProfile = new Intent(ProfileSettingActivity.this, LoggedActivity.class);
+                                                        backToProfile.putExtra("current_auth_name", name);
+                                                        backToProfile.putExtra("current_auth_bio", bio);
+                                                        backToProfile.putExtra("current_user_profile", download);
+                                                        backToProfile.putExtra("current_user_doc_id", docId);
+                                                        if(authFollower != null && authFollowing != null) {
+                                                            backToProfile.putExtra("current_user_follower", authFollower);
+                                                            backToProfile.putExtra("current_user_following", authFollowing);
+                                                        }
 
-                            @Override
-                            public void onSuccess(String requestId, Map resultData) {
-                                String url = resultData.get("url").toString();
-
-                                Map<String, Object> authUpdate = new HashMap<>();
-                                authUpdate.put("name", name);
-                                if(bio.length() > 0) {
-                                    authUpdate.put("bio", bio);
-                                }
-                                authUpdate.put("profile", url);
-
-                                db.collection("users").document(docId).update(authUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                        Intent backToProfile = new Intent(ProfileSettingActivity.this, LoggedActivity.class);
-                                        backToProfile.putExtra("current_auth_name", name);
-                                        backToProfile.putExtra("current_auth_bio", bio);
-                                        backToProfile.putExtra("current_user_profile", url);
-
-                                        finish();
-                                        startActivity(backToProfile);
+                                                        finish();
+                                                        startActivity(backToProfile);
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
-                                });
+                                }
+                            });
+                        }
+                        else {
+                            Map<String, Object> authUpdate = new HashMap<>();
+                            authUpdate.put("name", name);
+                            if (bio.length() > 0) {
+                                authUpdate.put("bio", bio);
                             }
+                            authUpdate.put("profile", imageUri.toString());
 
-                            @Override
-                            public void onError(String requestId, ErrorInfo error) {
+                            db.collection("users").document(docId).update(authUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                    Intent backToProfile = new Intent(ProfileSettingActivity.this, LoggedActivity.class);
+                                    backToProfile.putExtra("current_auth_name", name);
+                                    backToProfile.putExtra("current_auth_bio", bio);
+                                    backToProfile.putExtra("current_user_profile", imageUri.toString());
+                                    backToProfile.putExtra("current_user_doc_id", docId);
+                                    backToProfile.putExtra("current_user_follower", authFollower);
+                                    backToProfile.putExtra("current_user_following", authFollowing);
 
-                            }
-
-                            @Override
-                            public void onReschedule(String requestId, ErrorInfo error) {
-
-                            }
-                        }).dispatch();
+                                    startActivity(backToProfile);
+                                }
+                            });
+                        }
                     }
                     else {
                         Map<String, Object> authUpdate = new HashMap<>();
@@ -173,8 +196,10 @@ public class ProfileSettingActivity extends AppCompatActivity {
                                 backToProfile.putExtra("current_auth_name", name);
                                 backToProfile.putExtra("current_auth_bio", bio);
                                 backToProfile.putExtra("current_user_profile", "");
+                                backToProfile.putExtra("current_user_doc_id", docId);
+                                backToProfile.putExtra("current_user_follower", authFollower);
+                                backToProfile.putExtra("current_user_following", authFollowing);
 
-                                finish();
                                 startActivity(backToProfile);
                             }
                         });

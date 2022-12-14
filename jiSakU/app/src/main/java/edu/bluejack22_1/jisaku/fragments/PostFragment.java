@@ -43,12 +43,16 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.checkerframework.checker.index.qual.LengthOf;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import edu.bluejack22_1.jisaku.LoggedActivity;
+import edu.bluejack22_1.jisaku.ProfileSettingActivity;
 import edu.bluejack22_1.jisaku.R;
 
 /**
@@ -111,6 +115,10 @@ public class PostFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_post, container, false);
 
+        FirebaseStorage storage;
+        storage = FirebaseStorage.getInstance();
+        StorageReference storageReference;
+        storageReference = storage.getReference();
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
         Map<String, String> config = new HashMap<>();
@@ -205,49 +213,55 @@ public class PostFragment extends Fragment {
                 }
                 // post
                 else {
-                    String requestId = MediaManager.get().upload(videoUri).unsigned("jiSakU_SU").option("resource_type", "video").option("folder", "jiSakU").option("public_id", videoUri.toString()).callback(new UploadCallback() {
-                        @Override
-                        public void onStart(String requestId) {
+                    StorageReference ref = storageReference.child("videos/" + UUID.randomUUID().toString());
 
-                        }
+                    if(!videoUri.toString().contains("https")) {
+                        ref.putFile(videoUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull @NotNull Task<UploadTask.TaskSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String download = uri.toString();
 
-                        @Override
-                        public void onProgress(String requestId, long bytes, long totalBytes) {
+                                            String docId = getActivity().getIntent().getStringExtra("current_user_doc_id");
+                                            Map<String, Object> post = new HashMap<>();
+                                            post.put("title", title);
+                                            post.put("caption", caption);
+                                            post.put("videoPath", download);
+                                            post.put("category", categoryChosen[0]);
+                                            post.put("complexity", complexityChosen[0]);
+                                            post.put("userid", docId);
+                                            post.put("date", LocalDate.now().toString());
 
-                        }
+                                            db.collection("posts").add(post);
 
-                        @Override
-                        public void onSuccess(String requestId, Map resultData) {
-                            String url = resultData.get("url").toString();
+                                            Intent getData = getActivity().getIntent();
 
-                            String docId = getActivity().getIntent().getStringExtra("current_user_doc_id");
-                            Map<String, Object> post = new HashMap<>();
-                            post.put("title", title);
-                            post.put("caption", caption);
-                            post.put("videoPath", url);
-                            post.put("category", categoryChosen[0]);
-                            post.put("complexity", complexityChosen[0]);
-                            post.put("userid", docId);
-                            post.put("date", LocalDate.now().toString());
+                                            String authEmail = getData.getStringExtra("current_auth_email");
+                                            String authName = getData.getStringExtra("current_auth_name");
+                                            String authBio = getData.getStringExtra("current_auth_bio");
+                                            String authProfile = getData.getStringExtra("current_user_profile");
+                                            ArrayList<String> authFollower = (ArrayList<String>) getData.getExtras().getSerializable("current_user_follower");
+                                            ArrayList<String> authFollowing = (ArrayList<String>) getData.getExtras().getSerializable("current_user_following");
 
-                            db.collection("posts").add(post);
+                                            Intent intent = new Intent(getActivity(), LoggedActivity.class);
+                                            intent.putExtra("current_user_doc_id", docId);
+                                            intent.putExtra("current_auth_email", authEmail);
+                                            intent.putExtra("current_auth_name", authName);
+                                            intent.putExtra("current_auth_bio", authBio);
+                                            intent.putExtra("current_user_profile", authProfile);
+                                            intent.putExtra("current_user_follower", authFollower);
+                                            intent.putExtra("current_user_following", authFollowing);
 
-                            Intent intent = new Intent(getActivity(), LoggedActivity.class);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onError(String requestId, ErrorInfo error) {
-
-                        }
-
-                        @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {
-
-                        }
-                    }).dispatch();
-
-                    Log.d("Request ID", requestId.toString());
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });

@@ -38,4 +38,12 @@
     <string name="no_post_home">Belum ada posting, mulai memasang/ ikuti orang lain untuk melihat posting</string>
     <string name="wishlist_textView">Tandai</string>
     <string name="comment_title">Komentar</string>
+    <string name="wishlist_list_title">Ditandai</string>
+    <string name="button_search">Cari</string>
+    <string name="no_related_post">Post tidak ditemukan</string>
+    <string name="filter_by_all">Semua</string>
+    <string name="follow_button">Ikuti</string>
+    <string name="following_button">Mengikuti</string>
+    <string name="input_comment">Komentar</string>
+    <string name="submit_comment">Kirim</string>
 </resources>

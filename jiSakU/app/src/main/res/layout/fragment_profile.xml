@@ -52,11 +52,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="56dp"
                 android:layout_marginTop="28dp"
+                android:clickable="true"
                 android:text="Num"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:clickable="true"
                 app:layout_constraintEnd_toStartOf="@+id/circleImageView"
                 app:layout_constraintHorizontal_bias="0.052"
                 app:layout_constraintStart_toStartOf="parent"
@@ -68,11 +68,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:layout_marginEnd="40dp"
+                android:clickable="true"
                 android:text="Num"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.809"
                 app:layout_constraintStart_toEndOf="@+id/circleImageView"
@@ -82,7 +82,7 @@
                 android:id="@+id/usernameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center"
                 android:text="Username"
                 android:textAlignment="center"
@@ -108,10 +108,10 @@
                 android:id="@+id/settingButton"
                 android:layout_width="26dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="36dp"
+                android:layout_marginTop="24dp"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.111"
+                app:layout_constraintHorizontal_bias="0.112"
                 app:layout_constraintStart_toEndOf="@+id/usernameTextView"
                 app:layout_constraintTop_toBottomOf="@+id/circleImageView"
                 app:srcCompat="@drawable/ic_baseline_settings_24"
@@ -128,31 +128,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/usernameTextView" />
 
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/DIYListTitleProfile">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/DIYListProfile"
-                    android:layout_width="391dp"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="28dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/DIYListTitleProfile" />
-            </ScrollView>
-
             <TextView
                 android:id="@+id/DIYListTitleProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="12dp"
                 android:background="@color/logo"
                 android:padding="10dp"
                 android:text="@string/diy_list_title"
@@ -160,6 +141,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bioTextview" />
 
@@ -175,6 +157,90 @@
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/DIYListTitleProfile" />
+
+            <TextView
+                android:id="@+id/noWishlistText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_post_textView"
+                android:textSize="15dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/WishListsTitleProfile" />
+
+            <TextView
+                android:id="@+id/WishListsTitleProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/logo"
+                android:padding="10dp"
+                android:text="@string/wishlist_list_title"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutDIY" />
+
+            <LinearLayout
+                android:id="@+id/linearLayoutDIY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DIYListTitleProfile">
+
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/DIYListProfile"
+                        android:layout_width="391dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="28dp" />
+                </ScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/WishListsTitleProfile">
+
+                <ScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/WishListProfile"
+                        android:layout_width="391dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="28dp" />
+                </ScrollView>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/logoutButton"
+                android:layout_marginEnd="16dp"
+                android:layout_width="26dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:src="@drawable/ic_baseline_logout_24"
+                app:layout_constraintEnd_toStartOf="@+id/usernameTextView"
+                app:layout_constraintTop_toBottomOf="@+id/circleImageView"
+                app:tint="@color/logo"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

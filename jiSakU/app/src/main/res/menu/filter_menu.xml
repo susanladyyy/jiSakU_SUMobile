@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/byAll"
+        android:title="@string/filter_by_all" />
+
+    <item
+        android:id="@+id/byCategory"
+        android:title="@string/category_input_textView">
+
+        <menu>
+            <item
+                android:id="@+id/category1"
+                android:title="@string/category_choice_1"/>
+
+            <item
+                android:id="@+id/category2"
+                android:title="@string/category_choice_2"/>
+
+            <item
+                android:id="@+id/category3"
+                android:title="@string/category_choice_3"/>
+
+            <item
+                android:id="@+id/category4"
+                android:title="@string/category_choice_4"/>
+
+            <item
+                android:id="@+id/category5"
+                android:title="@string/category_choice_5"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/byComplexity"
+        android:title="@string/complexity_input_textView">
+        <menu>
+            <item
+                android:id="@+id/complexity1"
+                android:title="@string/complexity_choice_1"/>
+
+            <item
+                android:id="@+id/complexity2"
+                android:title="@string/complexity_choice_2"/>
+
+            <item
+                android:id="@+id/complexity3"
+                android:title="@string/complexity_choice_3"/>
+
+            <item
+                android:id="@+id/complexity4"
+                android:title="@string/complexity_choice_4"/>
+        </menu>
+    </item>
+</menu>

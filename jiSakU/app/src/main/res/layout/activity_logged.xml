@@ -11,8 +11,10 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        app:menu="@menu/bottom_navigation_menu"
         android:background="@color/logo"
+        app:itemIconTint="@drawable/navigation_view_color"
+        app:itemTextColor="@drawable/navigation_view_color"
+        app:menu="@menu/bottom_navigation_menu"
         app:labelVisibilityMode="labeled"
         android:layout_alignParentBottom="true" />
 

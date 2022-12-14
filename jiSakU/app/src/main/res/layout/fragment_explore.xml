@@ -18,7 +18,7 @@
                 android:id="@+id/exploreTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/explore_title_textView"
                 android:textColor="@color/black"
                 android:textSize="30sp"
@@ -30,8 +30,8 @@
 
             <EditText
                 android:id="@+id/searchTitleInput"
-                android:layout_width="324dp"
-                android:layout_height="45dp"
+                android:layout_width="272dp"
+                android:layout_height="43dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/edit_text_border"
                 android:ems="10"
@@ -39,7 +39,7 @@
                 android:inputType="textPersonName"
                 android:padding="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintHorizontal_bias="0.148"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exploreTitle" />
 
@@ -47,10 +47,11 @@
                 android:id="@+id/filterByButton"
                 android:layout_width="29dp"
                 android:layout_height="28dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
                 android:src="@drawable/ic_baseline_filter_alt_24"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.886"
+                app:layout_constraintHorizontal_bias="0.947"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchTitleInput"
                 app:tint="@color/logo" />
@@ -62,7 +63,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/filter_by_textView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.471"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchTitleInput" />
 
@@ -71,16 +72,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="TextView"
+                android:text="@string/filter_by_all"
                 app:layout_constraintEnd_toStartOf="@+id/filterByButton"
-                app:layout_constraintHorizontal_bias="0.224"
+                app:layout_constraintHorizontal_bias="0.13"
                 app:layout_constraintStart_toEndOf="@+id/filterByTextview"
                 app:layout_constraintTop_toBottomOf="@+id/searchTitleInput" />
 
             <ScrollView
+                android:id="@+id/scrollView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,6 +94,29 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="4dp" />
             </ScrollView>
+
+            <Button
+                android:id="@+id/searchButton"
+                android:layout_width="68dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="28dp"
+                android:textSize="8sp"
+                android:text="@string/button_search"
+                app:layout_constraintStart_toEndOf="@+id/searchTitleInput"
+                app:layout_constraintTop_toBottomOf="@+id/exploreTitle" />
+
+            <TextView
+                android:id="@+id/notFound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:text="@string/no_related_post"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.492"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchTitleInput" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

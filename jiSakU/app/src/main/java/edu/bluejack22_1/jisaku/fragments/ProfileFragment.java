@@ -1,6 +1,7 @@
 package edu.bluejack22_1.jisaku.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,11 +38,13 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.bluejack22_1.jisaku.FollowActivity;
 import edu.bluejack22_1.jisaku.FollowingActivity;
+import edu.bluejack22_1.jisaku.LoginActivity;
 import edu.bluejack22_1.jisaku.PostDetailActivity;
 import edu.bluejack22_1.jisaku.ProfileSettingActivity;
 import edu.bluejack22_1.jisaku.R;
 import edu.bluejack22_1.jisaku.adapters.ProfileDIYRecyclerViewAdapter;
-import edu.bluejack22_1.jisaku.interfaces.RecylerViewInterface;
+import edu.bluejack22_1.jisaku.adapters.WishlistRecyclerViewAdapter;
+import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Comment;
 import edu.bluejack22_1.jisaku.models.Post;
 
@@ -103,10 +106,10 @@ public class ProfileFragment extends Fragment {
 
         FirebaseFirestore db;
 
-        TextView username, bio, follower, following, noPost;
-        ImageView setting;
+        TextView username, bio, follower, following, noPost, noWish;
+        ImageView setting, logoutButton;
         CircleImageView profile;
-        RecyclerView diyListProfile;
+        RecyclerView diyListProfile, wishListProfile;
 
         username = view.findViewById(R.id.usernameTextView);
         bio = view.findViewById(R.id.bioTextview);
@@ -114,8 +117,11 @@ public class ProfileFragment extends Fragment {
         following = view.findViewById(R.id.followingCount);
         profile = view.findViewById(R.id.circleImageView);
         setting = view.findViewById(R.id.settingButton);
+        logoutButton = view.findViewById(R.id.logoutButton);
         noPost = view.findViewById(R.id.noPostText);
+        noWish = view.findViewById(R.id.noWishlistText);
         diyListProfile = view.findViewById(R.id.DIYListProfile);
+        wishListProfile = view.findViewById(R.id.WishListProfile);
 
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(getActivity(), googleSignInOptions);
@@ -126,7 +132,14 @@ public class ProfileFragment extends Fragment {
         Intent credentials = getActivity().getIntent();
         String cred = credentials.getStringExtra("credentials");
 
-        if(cred.equals("google_signin") && googleAccount != null) {
+        if(cred != null && cred.equals("google_signin") && googleAccount != null) {
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signOut();
+                }
+            });
+
             Log.d("Google Sign In ", "This is with google sign in");
             Log.d("Display name ", googleAccount.getDisplayName() + "");
 
@@ -184,6 +197,7 @@ public class ProfileFragment extends Fragment {
                                                 intent.putExtra("follow_list", (ArrayList) task.getResult().get("followers"));
                                             }
                                             else intent.putExtra("follow_list", new ArrayList<String>());
+                                            intent.putExtra("current_user_doc_id", finalDocId);
                                         }
 
                                         startActivity(intent);
@@ -205,6 +219,7 @@ public class ProfileFragment extends Fragment {
                                                     intent.putExtra("following_list", (ArrayList) task.getResult().get("following"));
                                                 }
                                                 else intent.putExtra("following_list", new ArrayList<String>());
+                                                intent.putExtra("current_user_doc_id", finalDocId);
                                             }
                                         }
                                         startActivity(intent);
@@ -222,6 +237,9 @@ public class ProfileFragment extends Fragment {
                                 profileSettingActivity.putExtra("current_user_profile", googleAccount.getPhotoUrl());
                                 profileSettingActivity.putExtra("current_auth_name", googleAccount.getDisplayName());
                                 profileSettingActivity.putExtra("current_auth_bio", finalBioText);
+//                                profileSettingActivity.putExtra("current_user_follower", follower);
+//                                profileSettingActivity.putExtra("current_user_following", follo);
+
                                 startActivity(profileSettingActivity);
                             }
                         });
@@ -238,6 +256,8 @@ public class ProfileFragment extends Fragment {
                                         diyListProfile.setVisibility(View.INVISIBLE);
                                     }
                                     else {
+                                        noPost.setVisibility(View.INVISIBLE);
+                                        diyListProfile.setVisibility(View.VISIBLE);
                                         for (QueryDocumentSnapshot doc: task.getResult()) {
                                             comment = false;
                                             ArrayList<String> wishes = new ArrayList<>();
@@ -256,7 +276,7 @@ public class ProfileFragment extends Fragment {
                                                 ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
 
                                                 for(int i = 0; i < temp.size(); i++) {
-                                                    comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString(), temp.get(i).get("postid").toString()));
+                                                    comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
                                                 }
                                             }
 
@@ -266,7 +286,7 @@ public class ProfileFragment extends Fragment {
                                         }
 
                                         boolean finalComment = comment;
-                                        ProfileDIYRecyclerViewAdapter adapter = new ProfileDIYRecyclerViewAdapter(new RecylerViewInterface() {
+                                        ProfileDIYRecyclerViewAdapter adapter = new ProfileDIYRecyclerViewAdapter(new RecyclerViewInterface() {
                                             @Override
                                             public void OnPostClick(int position) {
                                                 Intent intent = new Intent(getActivity(), PostDetailActivity.class);
@@ -290,11 +310,82 @@ public class ProfileFragment extends Fragment {
 
                             }
                         });
+
+                        db.collection("wishlists").whereEqualTo("userid", docId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    if(task.getResult().isEmpty()) {
+                                        noWish.setVisibility(View.VISIBLE);
+                                        wishListProfile.setVisibility(View.INVISIBLE);
+                                    }
+                                    else {
+                                        noWish.setVisibility(View.INVISIBLE);
+                                        wishListProfile.setVisibility(View.VISIBLE);
+                                        ArrayList<String> ids = new ArrayList<>();
+                                        final boolean[] comment = {false};
+
+                                        for (QueryDocumentSnapshot doc: task.getResult()) {
+                                            ids.add(doc.get("postid").toString());
+                                        }
+
+                                        db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task1) {
+                                                ArrayList<Post> wishlists = new ArrayList<>();
+
+                                                if(task1.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot doc: task1.getResult()) {
+                                                        if(ids.contains(doc.getId())) {
+                                                            ArrayList<String> wishes = new ArrayList<>();
+                                                            comment[0] = false;
+                                                            db.collection("wishlists").whereEqualTo("postid", doc.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task1) {
+                                                                    for (QueryDocumentSnapshot doc1: task1.getResult()) {
+                                                                        wishes.add(doc1.get("postid").toString());
+                                                                    }
+                                                                }
+                                                            });
+
+                                                            ArrayList<Comment> comments = new ArrayList<>();
+                                                            if(doc.get("comment") != null) {
+                                                                comment[0] = true;
+                                                                ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
+
+                                                                for(int i = 0; i < temp.size(); i++) {
+                                                                    comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
+                                                                }
+                                                            }
+
+                                                            Post post = new Post(finalDocId1, doc.getId(), doc.getString("title"), doc.getString("caption"), doc.getString("complexity"), doc.getString("category"), doc.getString("videoPath"), doc.getString("userid"), doc.getString("date"), comments, wishes);
+
+                                                            wishlists.add(post);
+                                                        }
+
+                                                        WishlistRecyclerViewAdapter wishAdapter = new WishlistRecyclerViewAdapter(getContext(), wishlists);
+                                                        wishListProfile.setAdapter(wishAdapter);
+                                                        wishListProfile.setLayoutManager(new LinearLayoutManager(getContext()));
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             });
         }
         else {
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    logOut();
+                }
+            });
+
             Intent authUser = getActivity().getIntent();
             String authEmail = authUser.getStringExtra("current_auth_email");
             String docId = authUser.getStringExtra("current_user_doc_id");
@@ -326,9 +417,7 @@ public class ProfileFragment extends Fragment {
                 profile.setImageResource(R.drawable.ic_default_user_profile);
             }
             // else ambil yang dari db
-            else {
-                Picasso.get().load(authProfile).into(profile);
-            }
+            else Picasso.get().load(Uri.parse(authProfile)).into(profile);
 
             follower.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -342,6 +431,7 @@ public class ProfileFragment extends Fragment {
                                     intent.putExtra("follow_list", (ArrayList) task.getResult().get("followers"));
                                 }
                                 else intent.putExtra("follow_list", new ArrayList<String>());
+                                intent.putExtra("current_user_doc_id", docId);
                             }
 
                             startActivity(intent);
@@ -363,6 +453,7 @@ public class ProfileFragment extends Fragment {
                                         intent.putExtra("following_list", (ArrayList) task.getResult().get("following"));
                                     }
                                     else intent.putExtra("following_list", new ArrayList<String>());
+                                    intent.putExtra("current_user_doc_id", docId);
                                 }
                             }
                             startActivity(intent);
@@ -380,6 +471,9 @@ public class ProfileFragment extends Fragment {
                     profileSettingActivity.putExtra("current_user_profile", authProfile);
                     profileSettingActivity.putExtra("current_auth_name", authName);
                     profileSettingActivity.putExtra("current_auth_bio", authBio);
+                    profileSettingActivity.putExtra("current_user_follower", authFollower);
+                    profileSettingActivity.putExtra("current_user_following", authFollowing);
+
                     startActivity(profileSettingActivity);
                 }
             });
@@ -397,6 +491,8 @@ public class ProfileFragment extends Fragment {
                         }
 
                         else {
+                            noPost.setVisibility(View.INVISIBLE);
+                            diyListProfile.setVisibility(View.VISIBLE);
                             for (QueryDocumentSnapshot doc: task.getResult()) {
                                 ArrayList<String> wishes = new ArrayList<>();
                                 comment = false;
@@ -415,7 +511,7 @@ public class ProfileFragment extends Fragment {
                                     ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
 
                                     for(int i = 0; i < temp.size(); i++) {
-                                        comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString(), temp.get(i).get("postid").toString()));
+                                        comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
                                     }
                                 }
 
@@ -425,7 +521,7 @@ public class ProfileFragment extends Fragment {
                             }
 
                             boolean finalComment = comment;
-                            ProfileDIYRecyclerViewAdapter adapter = new ProfileDIYRecyclerViewAdapter(new RecylerViewInterface() {
+                            ProfileDIYRecyclerViewAdapter adapter = new ProfileDIYRecyclerViewAdapter(new RecyclerViewInterface() {
                                 @Override
                                 public void OnPostClick(int position) {
                                     Intent intent = new Intent(getActivity(), PostDetailActivity.class);
@@ -449,19 +545,88 @@ public class ProfileFragment extends Fragment {
 
                 }
             });
+
+            db.collection("wishlists").whereEqualTo("userid", docId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()) {
+                        if(task.getResult().isEmpty()) {
+                            noWish.setVisibility(View.VISIBLE);
+                            wishListProfile.setVisibility(View.INVISIBLE);
+                        }
+                        else {
+                            noWish.setVisibility(View.INVISIBLE);
+                            wishListProfile.setVisibility(View.VISIBLE);
+                            ArrayList<String> ids = new ArrayList<>();
+                            final boolean[] comment = {false};
+
+                            for (QueryDocumentSnapshot doc: task.getResult()) {
+                                ids.add(doc.get("postid").toString());
+                            }
+
+                            db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task1) {
+                                    ArrayList<Post> wishlists = new ArrayList<>();
+
+                                    if(task1.isSuccessful()) {
+                                        for (QueryDocumentSnapshot doc: task1.getResult()) {
+                                            if(ids.contains(doc.getId())) {
+                                                ArrayList<String> wishes = new ArrayList<>();
+                                                comment[0] = false;
+                                                db.collection("wishlists").whereEqualTo("postid", doc.getId()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task1) {
+                                                        for (QueryDocumentSnapshot doc1: task1.getResult()) {
+                                                            wishes.add(doc1.get("postid").toString());
+                                                        }
+                                                    }
+                                                });
+
+                                                ArrayList<Comment> comments = new ArrayList<>();
+                                                if(doc.get("comment") != null) {
+                                                    comment[0] = true;
+                                                    ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
+
+                                                    for(int i = 0; i < temp.size(); i++) {
+                                                        comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
+                                                    }
+                                                }
+
+                                                Post post = new Post(docId, doc.getId(), doc.getString("title"), doc.getString("caption"), doc.getString("complexity"), doc.getString("category"), doc.getString("videoPath"), doc.getString("userid"), doc.getString("date"), comments, wishes);
+
+                                                wishlists.add(post);
+                                            }
+
+                                            WishlistRecyclerViewAdapter wishAdapter = new WishlistRecyclerViewAdapter(getContext(), wishlists);
+                                            wishListProfile.setAdapter(wishAdapter);
+                                            wishListProfile.setLayoutManager(new LinearLayoutManager(getContext()));
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
         }
         return view;
     }
 
     private void logOut() {
         FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        getActivity().finish();
+        startActivity(intent);
     }
 
     private void signOut() {
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<Void> task) {
-                // balik ke register page
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                getActivity().finish();
+                startActivity(intent);
             }
         });
     }

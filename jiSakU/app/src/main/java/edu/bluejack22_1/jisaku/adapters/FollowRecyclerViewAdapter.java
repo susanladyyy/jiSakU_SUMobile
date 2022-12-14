@@ -10,22 +10,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.bluejack22_1.jisaku.R;
+import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Follow;
 
 public class FollowRecyclerViewAdapter extends RecyclerView.Adapter<FollowRecyclerViewAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<Follow> follows;
+    private RecyclerViewInterface inter;
 
-    public FollowRecyclerViewAdapter(Context context, ArrayList<Follow> follows) {
+    public FollowRecyclerViewAdapter(Context context, ArrayList<Follow> follows, RecyclerViewInterface inter) {
         this.context = context;
         this.follows = follows;
+        this.inter = inter;
     }
 
     @NonNull
@@ -33,8 +38,8 @@ public class FollowRecyclerViewAdapter extends RecyclerView.Adapter<FollowRecycl
     @Override
     public FollowRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recyler_view_follow, parent, false);
-        return new FollowRecyclerViewAdapter.MyViewHolder(view);
+        View view = inflater.inflate(R.layout.recycler_view_follow, parent, false);
+        return new FollowRecyclerViewAdapter.MyViewHolder(view, inter);
     }
 
     @Override
@@ -45,7 +50,7 @@ public class FollowRecyclerViewAdapter extends RecyclerView.Adapter<FollowRecycl
             holder.profile.setImageResource(R.drawable.ic_default_user_profile);
         }
         else {
-            holder.profile.setImageURI(Uri.parse(follows.get(position).getProfile()));
+            Picasso.get().load(Uri.parse(follows.get(position).getProfile())).into(holder.profile);
         }
     }
 
@@ -59,11 +64,24 @@ public class FollowRecyclerViewAdapter extends RecyclerView.Adapter<FollowRecycl
         CircleImageView profile;
         TextView name;
 
-        public MyViewHolder(@NonNull @NotNull View itemView) {
+        public MyViewHolder(@NonNull @NotNull View itemView, RecyclerViewInterface inter) {
             super(itemView);
 
             profile = itemView.findViewById(R.id.profileFollowImage);
             name = itemView.findViewById(R.id.userFollowName);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(inter != null) {
+                        int pos = getAdapterPosition();
+
+                        if(pos != RecyclerView.NO_POSITION) {
+                            inter.OnPostClick(pos);
+                        }
+                    }
+                }
+            });
         }
 
     }

@@ -28,6 +28,7 @@
     <string name="follower_textView">Followers</string>
     <string name="following_textView">Following</string>
     <string name="diy_list_title">Your DIY Video(s)</string>
+    <string name="wishlist_list_title">Your Wishlist</string>
     <string name="no_post_textView">No Post Yet</string>
 
     <!--    Visibilities-->
@@ -40,6 +41,10 @@
     <string name="bio_input_hint">Bio</string>
     <string name="upload_button_text">Upload</string>
     <string name="save_changes_button_text">Save</string>
+
+    <!--    Other Profile Activity-->
+    <string name="follow_button">Follow</string>
+    <string name="following_button">Following</string>
 
     <!--    Posting Activity-->
     <string name="title_input_hint">Title</string>
@@ -61,11 +66,16 @@
     <!--    Explore Activity-->
     <string name="explore_title_textView">Explore</string>
     <string name="filter_by_textView">Filter By:</string>
+    <string name="button_search">Search</string>
+    <string name="no_related_post">No related post</string>
+    <string name="filter_by_all">All</string>
 
     <!--    Post Detail Activity-->
     <string name="posted_by_textView">Posted by</string>
     <string name="on_textView">on</string>
     <string name="comment_title">Comments</string>
+    <string name="input_comment">Comment</string>
+    <string name="submit_comment">Submit</string>
 
     <!-- Follow Activity -->
     <string name="no_follows">No Data</string>

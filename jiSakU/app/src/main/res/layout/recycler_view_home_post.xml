@@ -37,10 +37,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/videoViewFollowedPost"
                 app:srcCompat="@drawable/ic_baseline_comment_24" />
 
+            <ImageView
+                android:id="@+id/homePostBackground"
+                android:layout_width="352dp"
+                android:layout_height="206dp"
+                android:background="@color/logo"
+                app:layout_constraintEnd_toEndOf="@+id/videoViewFollowedPost"
+                app:layout_constraintStart_toStartOf="@+id/videoViewFollowedPost"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
             <VideoView
                 android:id="@+id/videoViewFollowedPost"
-                android:layout_width="350dp"
-                android:layout_height="200dp"
+                android:layout_width="349dp"
+                android:layout_height="204dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
