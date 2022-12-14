@@ -127,9 +127,9 @@ public class HomeFragment extends Fragment {
                                         }
 
                                         ArrayList<Comment> comments = new ArrayList<>();
-                                        if(doc.get("comment") != null) {
+                                        if(doc.get("comments") != null) {
                                             comment = true;
-                                            ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
+                                            ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comments");
 
                                             for(int i = 0; i < temp.size(); i++) {
                                                 comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));
@@ -173,9 +173,9 @@ public class HomeFragment extends Fragment {
                                             }
                                         }
 
-                                        if(doc.get("comment") != null) {
+                                        if(doc.get("comments") != null) {
                                             comment = true;
-                                            ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comment");
+                                            ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) doc.get("comments");
 
                                             for(int i = 0; i < temp.size(); i++) {
                                                 comments.add(new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString()));

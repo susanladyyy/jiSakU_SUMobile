@@ -93,7 +93,36 @@ public class PostDetailActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Comment must be filled", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    // add comment
+                    String userId = intent.getStringExtra("current_user_doc_id");
+                    String postId = intent.getStringExtra("docId_post");
+
+                    db.collection("posts").document(postId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()) {
+                                ArrayList<Map<String, Object>> comments;
+
+                                if(task.getResult().get("comments") == null) {
+                                    comments = new ArrayList<>();
+                                }
+                                else {
+                                    comments = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
+
+                                }
+
+                                Map<String, Object> temp = new HashMap<>();
+                                temp.put("userid", userId);
+                                temp.put("comment", comment);
+                                comments.add(temp);
+
+                                Log.d("comments", comments + "");
+                                Map<String, Object> com = new HashMap<>();
+                                com.put("comments", comments);
+
+                                db.collection("posts").document(postId).update(com);
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -207,17 +236,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 String userid = task.getResult().getString("userid");
 
                 if(task.getResult().get("comments") != null) {
-                    ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
-                    numComments.setText(temp.size() + "");
-
-                    for(int i = 0; i < temp.size(); i++) {
-                        Comment com = new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString());
-                        comments.add(com);
-                    }
-
-                    CommentRecyclerViewAdapter commentAdapter = new CommentRecyclerViewAdapter(getApplicationContext(), comments);
-                    commentList.setAdapter(commentAdapter);
-                    commentList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    showComments(task);
                 }
 
                 db.collection("users").document(userid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -260,6 +279,20 @@ public class PostDetailActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void showComments(Task<DocumentSnapshot> task) {
+        ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
+        numComments.setText(temp.size() + "");
+
+        for(int i = 0; i < temp.size(); i++) {
+            Comment com = new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString());
+            comments.add(com);
+        }
+
+        CommentRecyclerViewAdapter commentAdapter = new CommentRecyclerViewAdapter(getApplicationContext(), comments);
+        commentList.setAdapter(commentAdapter);
+        commentList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
 
     public void wishlisted(Intent intent) {
