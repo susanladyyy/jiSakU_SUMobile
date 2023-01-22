@@ -200,6 +200,24 @@ public class ProfileFragment extends Fragment {
                                             intent.putExtra("current_user_doc_id", finalDocId);
                                         }
 
+                                        DocumentSnapshot currUser = task.getResult();
+
+                                        intent.putExtra("current_auth_email", currUser.get("email").toString());
+                                        intent.putExtra("current_auth_name", currUser.get("name").toString());
+                                        intent.putExtra("current_user_doc_id", finalDocId);
+
+                                        if(currUser.get("bio") != null) intent.putExtra("current_auth_bio", currUser.get("bio").toString());
+                                        else intent.putExtra("current_auth_bio", "");
+
+                                        if(currUser.get("profile") != null) intent.putExtra("current_user_profile", currUser.get("profile").toString());
+                                        else intent.putExtra("current_user_profile", "");
+
+                                        if(currUser.get("followers") != null) intent.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
+                                        else {
+                                            ArrayList<String> fol = new ArrayList<>();
+                                            intent.putExtra("current_user_follower", fol);
+                                        }
+
                                         startActivity(intent);
                                     }
                                 });
@@ -220,9 +238,28 @@ public class ProfileFragment extends Fragment {
                                                 }
                                                 else intent.putExtra("following_list", new ArrayList<String>());
                                                 intent.putExtra("current_user_doc_id", finalDocId);
+
+                                                DocumentSnapshot currUser = task.getResult();
+
+                                                intent.putExtra("current_auth_email", currUser.get("email").toString());
+                                                intent.putExtra("current_auth_name", currUser.get("name").toString());
+                                                intent.putExtra("current_user_doc_id", finalDocId);
+
+                                                if(currUser.get("bio") != null) intent.putExtra("current_auth_bio", currUser.get("bio").toString());
+                                                else intent.putExtra("current_auth_bio", "");
+
+                                                if(currUser.get("profile") != null) intent.putExtra("current_user_profile", currUser.get("profile").toString());
+                                                else intent.putExtra("current_user_profile", "");
+
+                                                if(currUser.get("followers") != null) intent.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
+                                                else {
+                                                    ArrayList<String> fol = new ArrayList<>();
+                                                    intent.putExtra("current_user_follower", fol);
+                                                }
                                             }
+
+                                            startActivity(intent);
                                         }
-                                        startActivity(intent);
                                     }
                                 });
                             }
@@ -237,8 +274,6 @@ public class ProfileFragment extends Fragment {
                                 profileSettingActivity.putExtra("current_user_profile", googleAccount.getPhotoUrl());
                                 profileSettingActivity.putExtra("current_auth_name", googleAccount.getDisplayName());
                                 profileSettingActivity.putExtra("current_auth_bio", finalBioText);
-//                                profileSettingActivity.putExtra("current_user_follower", follower);
-//                                profileSettingActivity.putExtra("current_user_following", follo);
 
                                 startActivity(profileSettingActivity);
                             }
@@ -299,6 +334,7 @@ public class ProfileFragment extends Fragment {
                                                 intent.putExtra("videoPath", posts.get(position).getVideoPath());
                                                 intent.putExtra("userid", posts.get(position).getUserid());
                                                 intent.putExtra("date_post", posts.get(position).getDate());
+                                                intent.putExtra("current_user_doc_id", finalDocId);
 
                                                 startActivity(intent);
                                             }
@@ -400,14 +436,40 @@ public class ProfileFragment extends Fragment {
 
             // kalau ada follower/ following count dulu
             if(authFollower != null) {
-                follower.setText(authFollower.size()+"");
+                db.collection("users").document(docId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            if(task.getResult().get("followers") != null) {
+                                ArrayList<String> fol = (ArrayList) task.getResult().get("followers");
+                                follower.setText(fol.size() + "");
+                            }
+                            else {
+                                follower.setText("0");
+                            }
+                        }
+                    }
+                });
             }
             else {
                 follower.setText("0");
             }
 
             if(authFollowing != null) {
-                following.setText(authFollowing.size()+"");
+                db.collection("users").document(docId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            if(task.getResult().get("following") != null) {
+                                ArrayList<String> fol = (ArrayList) task.getResult().get("following");
+                                following.setText(fol.size() + "");
+                            }
+                            else {
+                                following.setText("0");
+                            }
+                        }
+                    }
+                });
             }
             else {
                 following.setText("0");
@@ -434,6 +496,24 @@ public class ProfileFragment extends Fragment {
                                 intent.putExtra("current_user_doc_id", docId);
                             }
 
+                            DocumentSnapshot currUser = task.getResult();
+
+                            intent.putExtra("current_auth_email", currUser.get("email").toString());
+                            intent.putExtra("current_auth_name", currUser.get("name").toString());
+                            intent.putExtra("current_user_doc_id", docId);
+
+                            if(currUser.get("bio") != null) intent.putExtra("current_auth_bio", currUser.get("bio").toString());
+                            else intent.putExtra("current_auth_bio", "");
+
+                            if(currUser.get("profile") != null) intent.putExtra("current_user_profile", currUser.get("profile").toString());
+                            else intent.putExtra("current_user_profile", "");
+
+                            if(currUser.get("followers") != null) intent.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
+                            else {
+                                ArrayList<String> fol = new ArrayList<>();
+                                intent.putExtra("current_user_follower", fol);
+                            }
+
                             startActivity(intent);
                         }
                     });
@@ -454,6 +534,24 @@ public class ProfileFragment extends Fragment {
                                     }
                                     else intent.putExtra("following_list", new ArrayList<String>());
                                     intent.putExtra("current_user_doc_id", docId);
+
+                                    DocumentSnapshot currUser = task.getResult();
+
+                                    intent.putExtra("current_auth_email", currUser.get("email").toString());
+                                    intent.putExtra("current_auth_name", currUser.get("name").toString());
+                                    intent.putExtra("current_user_doc_id", docId);
+
+                                    if(currUser.get("bio") != null) intent.putExtra("current_auth_bio", currUser.get("bio").toString());
+                                    else intent.putExtra("current_auth_bio", "");
+
+                                    if(currUser.get("profile") != null) intent.putExtra("current_user_profile", currUser.get("profile").toString());
+                                    else intent.putExtra("current_user_profile", "");
+
+                                    if(currUser.get("followers") != null) intent.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
+                                    else {
+                                        ArrayList<String> fol = new ArrayList<>();
+                                        intent.putExtra("current_user_follower", fol);
+                                    }
                                 }
                             }
                             startActivity(intent);
@@ -520,7 +618,6 @@ public class ProfileFragment extends Fragment {
                                 posts.add(post);
                             }
 
-                            boolean finalComment = comment;
                             ProfileDIYRecyclerViewAdapter adapter = new ProfileDIYRecyclerViewAdapter(new RecyclerViewInterface() {
                                 @Override
                                 public void OnPostClick(int position) {
@@ -534,6 +631,7 @@ public class ProfileFragment extends Fragment {
                                     intent.putExtra("videoPath", posts.get(position).getVideoPath());
                                     intent.putExtra("userid", posts.get(position).getUserid());
                                     intent.putExtra("date_post", posts.get(position).getDate());
+                                    intent.putExtra("current_user_doc_id", docId);
 
                                     startActivity(intent);
                                 }
@@ -621,12 +719,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void signOut() {
-        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+        googleSignInClient.revokeAccess().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<Void> task) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                getActivity().finish();
-                startActivity(intent);
+                googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        getActivity().finish();
+                        startActivity(intent);
+                    }
+                });
             }
         });
     }

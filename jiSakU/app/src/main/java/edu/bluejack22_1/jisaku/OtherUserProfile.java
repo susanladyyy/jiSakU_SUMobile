@@ -36,11 +36,15 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.bluejack22_1.jisaku.adapters.ProfileDIYRecyclerViewAdapter;
 import edu.bluejack22_1.jisaku.adapters.WishlistRecyclerViewAdapter;
+import edu.bluejack22_1.jisaku.fragments.ProfileFragment;
 import edu.bluejack22_1.jisaku.interfaces.RecyclerViewInterface;
 import edu.bluejack22_1.jisaku.models.Comment;
 import edu.bluejack22_1.jisaku.models.Post;
 
 public class OtherUserProfile extends AppCompatActivity {
+
+    FirebaseFirestore db;
+    String currUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,6 @@ public class OtherUserProfile extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        FirebaseFirestore db;
 
         TextView username, bio, follower, following, noPost, noWish;
         CircleImageView profile;
@@ -73,7 +75,7 @@ public class OtherUserProfile extends AppCompatActivity {
         followButton = findViewById(R.id.followButton);
         unfollowButton = findViewById(R.id.unfollowButton);
 
-        String currUserId = intent.getStringExtra("current_user_doc_id");
+        currUserId = intent.getStringExtra("current_user_doc_id");
         String userId = "";
 
         if(intent.getStringExtra("clicked_follower_id") != null) {
@@ -118,9 +120,9 @@ public class OtherUserProfile extends AppCompatActivity {
                         db.collection("users").document(finalUserId1).update(folUpd);
 
                         Map<String, Object> activity = new HashMap<>();
-                        activity.put("userid", finalUserId1);
+                        activity.put("userid", currUserId);
+                        activity.put("other", finalUserId1);
                         activity.put("date", LocalDate.now().toString());
-                        activity.put("activity", name[0] + " started following you");
                         activity.put("type", "follow");
 
                         db.collection("activities").add(activity);
@@ -195,20 +197,6 @@ public class OtherUserProfile extends AppCompatActivity {
                         db.collection("users").document(currUserId).update(folUpd);
                     }
                 });
-            }
-        });
-
-        follower.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        following.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 
@@ -403,6 +391,27 @@ public class OtherUserProfile extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0 ) {
+            db.collection("users").document(currUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        Intent intent = new Intent(OtherUserProfile.this, ProfileFragment.class);
+                        if(task.getResult().get("followers") != null) intent.putExtra("current_user_follower", (ArrayList) task.getResult().get("followers"));
+                        else {
+                            ArrayList<String> fol = new ArrayList<>();
+                            intent.putExtra("current_user_follower", fol);
+                        }
+
+                        if(task.getResult().get("following") != null) intent.putExtra("current_user_following",  (ArrayList) task.getResult().get("following"));
+                        else {
+                            ArrayList<String> foll = new ArrayList<>();
+                            intent.putExtra("current_user_following", foll);
+                        }
+
+                        startActivity(intent);
+                    }
+                }
+            });
             getFragmentManager().popBackStack();
         }
         else {

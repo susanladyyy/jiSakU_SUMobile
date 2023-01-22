@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -92,21 +94,53 @@ public class ActivityFragment extends Fragment {
     }
 
     public void getUserActivity(FirebaseFirestore db, String userId, RecyclerView activityList) {
-        db.collection("activities").whereEqualTo("userid", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        final String[] userid = {""};
+        final String[] activity = { "" };
+        final String[] type = {""};
+        final String[] date = {""};
+        final String[] postTitle = {""};
+
+        db.collection("activities").whereEqualTo("other", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
                 ArrayList<Activity> activities = new ArrayList<>();
                 if(task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc: task.getResult()) {
-                        Activity act = null;
+                        final Activity[] act = {null};
 
-                        act = new Activity(doc.get("userid").toString(), doc.get("activity").toString(), doc.get("type").toString(), doc.get("date").toString());
-                        activities.add(act);
+                        if(doc.get("userid") != null) userid[0] = doc.get("userid").toString();
+                        if(doc.get("postTitle") != null) {
+                            postTitle[0] = doc.get("postTitle").toString();
+                        }
+                        if(doc.get("type") != null) type[0] = doc.get("type").toString();
+                        if(doc.get("date") != null) date[0] = doc.get("date").toString();
+
+                        String finalType = type[0];
+                        String finalPostTitle = postTitle[0];
+                        Log.d("final", finalType);
+                        db.collection("users").document(userid[0]).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                                if(finalType.equals("wishlist")) {
+                                    activity[0] = getString(R.string.wishlist_act);
+                                }
+                                else if(finalType.equals("follow")) {
+                                    activity[0] = task.getResult().get("name").toString() + getString(R.string.follow_act);
+                                }
+                                else {
+                                    activity[0] = task.getResult().get("name").toString() + " " + getString(R.string.comment_act) + " " + finalPostTitle;
+                                }
+
+                                Log.d("act", activity[0] + " activity");
+                                act[0] = new Activity(userid[0], activity[0], type[0], date[0]);
+                                activities.add(act[0]);
+
+                                ActivityRecyclerViewAdapter adapter = new ActivityRecyclerViewAdapter(getContext(), activities);
+                                activityList.setAdapter(adapter);
+                                activityList.setLayoutManager(new LinearLayoutManager(getContext()));
+                            }
+                        });
                     }
-
-                    ActivityRecyclerViewAdapter adapter = new ActivityRecyclerViewAdapter(getContext(), activities);
-                    activityList.setAdapter(adapter);
-                    activityList.setLayoutManager(new LinearLayoutManager(getContext()));
                 }
             }
         });

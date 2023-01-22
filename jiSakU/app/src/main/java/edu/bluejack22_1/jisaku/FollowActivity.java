@@ -24,14 +24,40 @@ import java.util.ArrayList;
 
 import edu.bluejack22_1.jisaku.adapters.FollowRecyclerViewAdapter;
 import edu.bluejack22_1.jisaku.fragments.FollowListFragment;
+import edu.bluejack22_1.jisaku.fragments.ProfileFragment;
 import edu.bluejack22_1.jisaku.models.Follow;
 
 public class FollowActivity extends AppCompatActivity {
+
+    String id, email, name, bio = "", profile = "default";
+    ArrayList<String> authFollower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow);
+
+        Intent getInt = getIntent();
+
+        if(getInt.getExtras().getSerializable("follow_list") != null) {
+            authFollower = (ArrayList<String>) getInt.getExtras().getSerializable("follow_list");
+        }
+
+        if(getInt.getStringExtra("current_user_doc_id") != null) {
+            id = getInt.getStringExtra("current_user_doc_id");
+        }
+        if(getInt.getStringExtra("current_auth_email") != null) {
+            email = getInt.getStringExtra("current_auth_email");
+        }
+        if(getInt.getStringExtra("current_auth_name") != null) {
+            name = getInt.getStringExtra("current_auth_name");
+        }
+        if(getInt.getStringExtra("current_auth_bio") != null) {
+            bio = getInt.getStringExtra("current_auth_bio");
+        }
+        if(getInt.getStringExtra("current_user_profile") != null) {
+            profile = getInt.getStringExtra("current_user_profile");
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24);
@@ -44,12 +70,20 @@ public class FollowActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0 ) {
-            getFragmentManager().popBackStack();
-        }
-        else {
-            super.onBackPressed();
-        }
+//        if (getFragmentManager().getBackStackEntryCount() > 0 ) {
+//            getFragmentManager().popBackStack();
+//        }
+//        else {
+//            super.onBackPressed();
+//        }
+        Intent intent = new Intent(FollowActivity.this, LoggedActivity.class);
+        intent.putExtra("current_user_doc_id", id);
+        intent.putExtra("current_auth_name", name);
+        intent.putExtra("current_auth_email", email);
+        intent.putExtra("current_auth_bio", bio);
+        intent.putExtra("current_user_profile", profile);
+        intent.putExtra("current_user_follower", authFollower);
+        startActivity(intent);
     }
 
     @Override

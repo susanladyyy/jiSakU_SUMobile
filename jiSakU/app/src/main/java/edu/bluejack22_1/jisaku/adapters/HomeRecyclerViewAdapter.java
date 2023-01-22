@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -56,7 +57,21 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         holder.videoPost.setVideoURI(Uri.parse(posts.get(position).getVideoPath()));
         holder.title.setText(posts.get(position).getTitle());
         holder.caption.setText(posts.get(position).getCaption());
-        holder.commentCount.setText(posts.get(position).getComment().size() + "");
+
+        holder.db.collection("posts").document(posts.get(position).getDocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getResult().get("comments") != null) {
+                        ArrayList<Map<String, Object>> com = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
+                        holder.commentCount.setText(com.size() + "");
+                    }
+                    else {
+                        holder.commentCount.setText("0");
+                    }
+                }
+            }
+        });
 
         holder.db.collection("users").document(posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -103,7 +118,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                 holder.db.collection("users").document(posts.get(position).getCurrdocId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        holder.wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                        if(task.getResult().get("wishlist") != null) {
+                            holder.wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                        }
                         int i = 0;
 
                         if(holder.wishes != null) {
@@ -150,8 +167,8 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
                         Map<String, Object> activity = new HashMap<>();
                         activity.put("userid", posts.get(position).getUserid());
-                        activity.put("activity", "Your post was added to another user wishlist!");
                         activity.put("date", LocalDate.now().toString());
+                        activity.put("type", "wishlist");
 
                         holder.db.collection("activities").add(activity);
                     }

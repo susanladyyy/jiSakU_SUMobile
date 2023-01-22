@@ -122,6 +122,7 @@ public class PostFragment extends Fragment {
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
         Map<String, String> config = new HashMap<>();
+        Intent loggedIntent = getActivity().getIntent();
 
         EditText titleInput, captionInput;
         Spinner category, complexity;
@@ -134,11 +135,6 @@ public class PostFragment extends Fragment {
         postButton = view.findViewById(R.id.buttonPost);
         uploadVideo = view.findViewById(R.id.uploadVideoButton);
         videoPost = view.findViewById(R.id.postVideoView);
-
-        if(!init) {
-            configCloudinary(config);
-        }
-
 
         final String[] categoryChosen = {"Choose Category"};
         final String[] complexityChosen = {"Choose Complexity"};
@@ -197,19 +193,19 @@ public class PostFragment extends Fragment {
                 // validate upload video
 
                 if(videoUri == null) {
-                    Toast.makeText(getContext(), "Video must be selected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.video_post, Toast.LENGTH_LONG).show();
                 }
                 else if(title.length() <= 0) {
-                    Toast.makeText(getContext(), "Title must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.title_post, Toast.LENGTH_LONG).show();
                 }
                 else if(caption.length() <= 0) {
-                    Toast.makeText(getContext(), "Caption must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.caption_post, Toast.LENGTH_LONG).show();
                 }
                 else if(categoryChosen[0].equals("Choose Category")) {
-                    Toast.makeText(getContext(), "Category must be chosen", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.category_post, Toast.LENGTH_LONG).show();
                 }
                 else if(complexityChosen[0].equals("Choose Complexity")) {
-                    Toast.makeText(getContext(), "Complexity must be chosen", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.complexity_post, Toast.LENGTH_LONG).show();
                 }
                 // post
                 else {
@@ -255,6 +251,10 @@ public class PostFragment extends Fragment {
                                             intent.putExtra("current_user_follower", authFollower);
                                             intent.putExtra("current_user_following", authFollowing);
 
+                                            String cred = loggedIntent.getStringExtra("credentials");
+                                            if(cred != null && cred == "google_signin") {
+                                                intent.putExtra("credentials", "google_signin");
+                                            }
                                             startActivity(intent);
                                         }
                                     });
@@ -266,15 +266,6 @@ public class PostFragment extends Fragment {
             }
         });
         return view;
-    }
-
-    private void configCloudinary(Map<String, String> config) {
-        config.put("cloud_name", "cloudinarysu");
-        config.put("api_key", "896134991274257");
-        config.put("api_secret", "4H-vaVdpZJAaoCXoEh97alj51wI");
-
-        MediaManager.init(getContext(), config);
-        init = true;
     }
 
     private void openVideoChooser() {

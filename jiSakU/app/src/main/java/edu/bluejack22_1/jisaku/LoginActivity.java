@@ -3,8 +3,15 @@ package edu.bluejack22_1.jisaku;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -89,10 +96,10 @@ public class LoginActivity extends AppCompatActivity {
                 password = passwordLogin.getText().toString();
 
                 if(email.length() <= 0){
-                    Toast.makeText(getApplicationContext(), "Email must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.email_login, Toast.LENGTH_LONG).show();
                 }
                 else if(password.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Password must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.pass_login, Toast.LENGTH_LONG).show();
                 }
                 else {
                     auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
@@ -100,8 +107,9 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull @NotNull Task<SignInMethodQueryResult> task) {
                             boolean check = task.getResult().getSignInMethods().isEmpty();
 
-                            if(check) Toast.makeText(getApplicationContext(), "Email does not exists", Toast.LENGTH_LONG).show();
+                            if(check) Toast.makeText(getApplicationContext(), R.string.email_exists, Toast.LENGTH_LONG).show();
                             else {
+
                                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
@@ -142,12 +150,39 @@ public class LoginActivity extends AppCompatActivity {
                                                         }
 
                                                         loggedActivity.putExtra("credentials", "email_pass");
+
+                                                        NotificationManager mNotificationManager;
+
+                                                        NotificationCompat.Builder mBuilder =
+                                                                new NotificationCompat.Builder(getApplicationContext(), "notify_001");
+                                                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, loggedActivity, 0);
+                                                        mBuilder.setContentIntent(pendingIntent);
+                                                        mBuilder.setSmallIcon(R.mipmap.ic_launcher_round);
+                                                        mBuilder.setContentTitle(getString(R.string.notification_title));
+                                                        mBuilder.setContentText(getString(R.string.notification_body));
+                                                        mBuilder.setPriority(Notification.PRIORITY_MAX);
+
+                                                        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                                        {
+                                                            String channelId = "Your_channel_id";
+                                                            NotificationChannel channel = new NotificationChannel(
+                                                                    channelId,
+                                                                    "Channel human readable title",
+                                                                    NotificationManager.IMPORTANCE_HIGH);
+                                                            mNotificationManager.createNotificationChannel(channel);
+                                                            mBuilder.setChannelId(channelId);
+                                                        }
+
+                                                        mNotificationManager.notify(0, mBuilder.build());
+
                                                         startActivity(loggedActivity);
                                                     }
                                                 }
                                             });
                                         }
-                                        else Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_LONG).show();
+                                        else Toast.makeText(getApplicationContext(), R.string.invalid_login, Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
@@ -172,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 task.getResult(ApiException.class);
-                Intent loggedActivity = new Intent(this, LoggedActivity.class);
+                Intent loggedActivity = new Intent(LoginActivity.this, LoggedActivity.class);
 
                 GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
                 db.collection("users").whereEqualTo("email", acc.getEmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -193,24 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                                     loggedActivity.putExtra("current_auth_email", acc.getEmail());
                                     loggedActivity.putExtra("current_auth_name", acc.getDisplayName());
 
-//                                    if(currUser.get("bio") != null) loggedActivity.putExtra("current_auth_bio", currUser.get("bio").toString());
-//                                    else loggedActivity.putExtra("current_auth_bio", "");
-//
-//                                    if(currUser.get("profile") != null) loggedActivity.putExtra("current_user_profile", currUser.get("profile").toString());
-//                                    else loggedActivity.putExtra("current_user_profile", "");
-//
-//                                    if(currUser.get("followers") != null) loggedActivity.putExtra("current_user_follower", (ArrayList) currUser.get("followers"));
-//                                    else {
-//                                        ArrayList<String> fol = new ArrayList<>();
-//                                        loggedActivity.putExtra("current_user_follower", fol);
-//                                    }
-//
-//                                    if(currUser.get("following") != null) loggedActivity.putExtra("current_user_following",  (ArrayList) currUser.get("following"));
-//                                    else {
-//                                        ArrayList<String> foll = new ArrayList<>();
-//                                        loggedActivity.putExtra("current_user_following", foll);
-//                                    }
-//                                    startActivity(loggedActivity);
+                                    startActivity(loggedActivity);
                                 }
                             });
                         }
@@ -222,10 +240,29 @@ public class LoginActivity extends AppCompatActivity {
 
                                     for (QueryDocumentSnapshot doc: task.getResult()) {
                                         docId = doc.getId();
+                                        if(doc.get("bio") != null) loggedActivity.putExtra("current_auth_bio", doc.get("bio").toString());
+                                        else loggedActivity.putExtra("current_auth_bio", "");
+
+                                        if(doc.get("profile") != null) loggedActivity.putExtra("current_user_profile", doc.get("profile").toString());
+                                        else loggedActivity.putExtra("current_user_profile", "");
+
+                                        if(doc.get("followers") != null) loggedActivity.putExtra("current_user_follower", (ArrayList) doc.get("followers"));
+                                        else {
+                                            ArrayList<String> fol = new ArrayList<>();
+                                            loggedActivity.putExtra("current_user_follower", fol);
+                                        }
+
+                                        if(doc.get("following") != null) loggedActivity.putExtra("current_user_following",  (ArrayList) doc.get("following"));
+                                        else {
+                                            ArrayList<String> foll = new ArrayList<>();
+                                            loggedActivity.putExtra("current_user_following", foll);
+                                        }
                                     }
 
                                     loggedActivity.putExtra("current_user_doc_id", docId);
                                     loggedActivity.putExtra("credentials", "google_signin");
+                                    loggedActivity.putExtra("current_auth_email", acc.getEmail());
+                                    loggedActivity.putExtra("current_auth_name", acc.getDisplayName());
 
                                     // kalau ada ambil data lengkapnya dari db
                                     startActivity(loggedActivity);
@@ -237,7 +274,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
             } catch (ApiException e) {
-                Toast.makeText(this, "Error signing in with google", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.google_signin_err, Toast.LENGTH_LONG).show();
             }
         }
     }

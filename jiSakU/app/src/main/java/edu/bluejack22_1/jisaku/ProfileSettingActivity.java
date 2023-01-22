@@ -111,7 +111,7 @@ public class ProfileSettingActivity extends AppCompatActivity {
                 Log.d("Doc ID ", docId);
 
                 if(name.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Name must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.name_regis, Toast.LENGTH_LONG).show();
                 }
                 else {
                     if (imageUri != null) {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">jiSakU</string>
+    <string name="app_name" translatable="false">jiSakU</string>
     <!--    Common-->
     <string name="email_label">Email</string>
     <string name="password_label">Password</string>
@@ -84,4 +84,38 @@
     <!--    Home Activity-->
     <string name="no_post_home">No post yet, start posting/ following someone to view posts</string>
     <string name="wishlist_textView">Wishlist</string>
+
+    <!--    Toast-->
+    <!--    login toast-->
+    <string name="email_login">Email must be filled!</string>
+    <string name="pass_login">Password must be filled!</string>
+    <string name="email_exists">Email does not exist!</string>
+    <string name="invalid_login">Invalid credentials!</string>
+    <string name="google_signin_err">Error signing in with google!</string>
+
+    <!--    register toast-->
+    <string name="name_regis">Name must be filled!</string>
+    <string name="confirm_regis">Confirm password must be filled!</string>
+    <string name="no_match">Passwords do not match!</string>
+    <string name="successful_regis">Successfully registered!</string>
+    <string name="taken_regis">Email has been taken!</string>
+
+    <!--    post toast-->
+    <string name="video_post">Video must be selected!</string>
+    <string name="title_post">Title must be filled!</string>
+    <string name="caption_post">Caption must be filled!</string>
+    <string name="category_post">Category must be chosen!</string>
+    <string name="complexity_post">Complexity must be chosen!</string>
+
+    <!--    comment toast-->
+    <string name="comment_input">Comment must be filled!</string>
+
+    <!--    login notification-->
+    <string name="notification_title">jiSakU Notification</string>
+    <string name="notification_body">Successfully logged in!</string>
+
+    <!--    User Activity-->
+    <string name="follow_act">started following you</string>
+    <string name="comment_act">commented on </string>
+    <string name="wishlist_act">Your post has been added to another user\'s wishlist</string>
 </resources>

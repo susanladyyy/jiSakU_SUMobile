@@ -117,8 +117,8 @@ public class HomeFragment extends Fragment {
                                         ArrayList<String> wishes = new ArrayList<>();
                                         comment = false;
 
-                                        if(task.getResult().get("wishlist") != null) {
-                                            tempWishes = (ArrayList<String>) task.getResult().get("wishlist");
+                                        if(doc.get("wishlist") != null) {
+                                            tempWishes = (ArrayList<String>) doc.get("wishlist");
                                             for (String w: tempWishes) {
                                                 if(w.equals(doc.getId())) {
                                                     wishes.add(w);
@@ -156,7 +156,7 @@ public class HomeFragment extends Fragment {
 
                             @Override
                             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task1) {
-                                if(task.isSuccessful()) {
+                                if(task1.isSuccessful()) {
                                     ArrayList<Comment> comments = new ArrayList<>();
 
                                     for (QueryDocumentSnapshot doc: task1.getResult()) {
@@ -164,8 +164,8 @@ public class HomeFragment extends Fragment {
                                         ArrayList<String> wishes = new ArrayList<>();
                                         comment = false;
 
-                                        if(task.getResult().get("wishlist") != null) {
-                                            tempWishes = (ArrayList<String>) task.getResult().get("wishlist");
+                                        if(doc.get("wishlist") != null) {
+                                            tempWishes = (ArrayList<String>) doc.get("wishlist");
                                             for (String w: tempWishes) {
                                                 if(w.equals(doc.getId())) {
                                                     wishes.add(w);

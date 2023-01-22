@@ -74,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                 confirmPassword = confirmPasswordRegister.getText().toString();
 
                 if(name.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Name must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.name_regis, Toast.LENGTH_LONG).show();
                 }
                 else if(email.length() <= 0) {
-                    Toast.makeText(getApplicationContext(), "Email must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.email_login, Toast.LENGTH_LONG).show();
                 }
                 else {
                     auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
@@ -87,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
                             if(check) {
                                 if(password.length() <= 0) {
-                                    Toast.makeText(getApplicationContext(), "Password must be filled", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), R.string.pass_login, Toast.LENGTH_LONG).show();
                                 }
                                 else if(confirmPassword.length() <= 0) {
-                                    Toast.makeText(getApplicationContext(), "Confirm password must be filled", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), R.string.confirm_regis, Toast.LENGTH_LONG).show();
                                 }
                                 else if(!password.equals(confirmPassword)) {
-                                    Toast.makeText(getApplicationContext(), "Passwords do not match", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), R.string.no_match, Toast.LENGTH_LONG).show();
                                 }
                                 else {
                                     users.put("name", name);
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                                     db.collection("users").add(users).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
-                                            Toast.makeText(getApplicationContext(), "Successfully registered!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), R.string.successful_regis, Toast.LENGTH_LONG).show();
                                         }
                                     });
 
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                     confirmPasswordRegister.setText("");
                                 }
                             }
-                            else Toast.makeText(getApplicationContext(), "Email has been taken", Toast.LENGTH_LONG).show();
+                            else Toast.makeText(getApplicationContext(), R.string.taken_regis, Toast.LENGTH_LONG).show();
                         }
                     });
                 }

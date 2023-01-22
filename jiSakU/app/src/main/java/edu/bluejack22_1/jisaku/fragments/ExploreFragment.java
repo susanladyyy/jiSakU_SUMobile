@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -327,7 +328,9 @@ public class ExploreFragment extends Fragment {
 
                 if(task.isSuccessful()) {
                     for (QueryDocumentSnapshot doc: task.getResult()) {
-                        if(doc.get("title").toString().contains(searchInput.getText().toString())) {
+                        String dbTitle =  doc.get("title").toString().toLowerCase();
+                        String inpTitle = searchInput.getText().toString().toLowerCase();
+                        if(dbTitle.contains(inpTitle)) {
                             comment = false;
 
                             ArrayList<String> wishes = new ArrayList<>();
@@ -452,6 +455,7 @@ public class ExploreFragment extends Fragment {
                                 startActivity(intent);
                             }
                         });
+                        Log.d("ASD", posts.size()+"");
                         exploreRv.setAdapter(adapter);
                         exploreRv.setLayoutManager(new LinearLayoutManager(getContext()));
                     }

@@ -51,6 +51,7 @@ public class PostDetailActivity extends AppCompatActivity {
     ArrayList<Comment> comments;
     ImageView wishlist, nonWishlist;
     Button submitComment;
+    ArrayList<Map<String, Object>> mapArrayList;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -64,6 +65,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         db = FirebaseFirestore.getInstance();
+        mapArrayList = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.US);
         LocalDate date = LocalDate.parse(intent.getStringExtra("date_post"));
@@ -90,7 +92,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 String comment = inputComment.getText().toString();
 
                 if(comment.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Comment must be filled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.comment_input, Toast.LENGTH_LONG).show();
                 }
                 else {
                     String userId = intent.getStringExtra("current_user_doc_id");
@@ -120,6 +122,37 @@ public class PostDetailActivity extends AppCompatActivity {
                                 com.put("comments", comments);
 
                                 db.collection("posts").document(postId).update(com);
+
+                                Map<String, Object> act = new HashMap<>();
+                                String ui = intent.getStringExtra("userid");
+
+                                db.collection("users").document(ui).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task1) {
+                                        String name = task1.getResult().get("name").toString();
+                                        String post = task.getResult().get("title").toString();
+
+                                        act.put("userid", userId);
+                                        act.put("other", ui);
+                                        act.put("postTitle", post);
+                                        act.put("date", LocalDate.now().toString());
+                                        act.put("type", "comment");
+
+                                        db.collection("activities").add(act);
+
+                                        db.collection("posts").document(intent.getStringExtra("docId_post")).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task2) {
+                                                String userid = task2.getResult().getString("userid");
+
+                                                if(task2.getResult().get("comments") != null) {
+                                                    mapArrayList = new ArrayList<>();
+                                                    showComments(task2);
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
                             }
                         }
                     });
@@ -205,7 +238,10 @@ public class PostDetailActivity extends AppCompatActivity {
                 db.collection("users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        ArrayList wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                        ArrayList<String> wishes = new ArrayList<>();
+                        if(task.getResult().get("wishlist") != null) {
+                            wishes = (ArrayList<String>) task.getResult().get("wishlist");
+                        }
 
                         wishes.add(postId);
                         Map<String, Object> wishMap = new HashMap<>();
@@ -216,8 +252,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         Map<String, Object> activity = new HashMap<>();
                         String poster = intent.getStringExtra("userid");
                         activity.put("userid", poster);
-                        activity.put("activity", "Your post was added to another user wishlist!");
                         activity.put("date", LocalDate.now().toString());
+                        activity.put("type", "wishlist");
 
                         db.collection("activities").add(activity);
                         updateWishlisted(intent);
@@ -282,11 +318,11 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     public void showComments(Task<DocumentSnapshot> task) {
-        ArrayList<Map<String, Object>> temp = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
-        numComments.setText(temp.size() + "");
+        mapArrayList = (ArrayList<Map<String, Object>>) task.getResult().get("comments");
+        numComments.setText(mapArrayList.size() + "");
 
-        for(int i = 0; i < temp.size(); i++) {
-            Comment com = new Comment(temp.get(i).get("userid").toString(), temp.get(i).get("comment").toString());
+        for(int i = 0; i < mapArrayList.size(); i++) {
+            Comment com = new Comment(mapArrayList.get(i).get("userid").toString(), mapArrayList.get(i).get("comment").toString());
             comments.add(com);
         }
 
@@ -297,6 +333,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     public void wishlisted(Intent intent) {
         String id = intent.getStringExtra("current_user_doc_id");
+        Log.d("ID Google", id + "");
 
         db.collection("users").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

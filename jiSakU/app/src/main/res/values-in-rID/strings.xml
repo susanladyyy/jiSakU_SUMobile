@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">jiSakU</string>
     <string name="name_register_label">Nama</string>
     <string name="confirm_register_label">Konfirmasi Kata Sandi</string>
     <string name="button_register">Daftar</string>
@@ -46,4 +45,25 @@
     <string name="following_button">Mengikuti</string>
     <string name="input_comment">Komentar</string>
     <string name="submit_comment">Kirim</string>
+    <string name="email_login">Email tidak boleh kosong!</string>
+    <string name="pass_login">Password tidak boleh kosong!</string>
+    <string name="email_exists">Email tidak ditemukan!</string>
+    <string name="invalid_login">Akun tidak ditemukan!</string>
+    <string name="google_signin_err">Gagal masuk dengan akun Google!</string>
+    <string name="name_regis">Nama tidak boleh kosong!</string>
+    <string name="confirm_regis">Konfirmasi sandi tidak boleh kosong!</string>
+    <string name="no_match">Kata sandi tidak sesuai dengan konfirmasi!</string>
+    <string name="successful_regis">Berhasil teregistrasi!</string>
+    <string name="taken_regis">Email sudah terpakai oleh akun lain!</string>
+    <string name="video_post">Video harus dipilih!</string>
+    <string name="title_post">Judul tidak boleh kosong!</string>
+    <string name="caption_post">Deskripsi tidak boleh kosong!</string>
+    <string name="category_post">Kategori harus dipilih!</string>
+    <string name="complexity_post">Kompleksitas harus dipilih!</string>
+    <string name="comment_input">Komentar tidak boleh kosong!</string>
+    <string name="notification_title">Notifikasi jiSakU</string>
+    <string name="notification_body">Berhasil masuk!</string>
+    <string name="follow_act">mulai mengikuti anda</string>
+    <string name="comment_act">mengomentari postingan</string>
+    <string name="wishlist_act">Postingan anda masuk ke \"Ditandai\" pengguna lain</string>
 </resources>
